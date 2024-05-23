@@ -1,17 +1,20 @@
 <template>
+    
   <section v-for="character in characters.data" :key="character.id">
     <img :src="character.image" :alt="'Image of ' + character.name">
     <div class="info">
-      <h2>{{ character.name }}</h2>
-      <p>Status: {{ character.status }} - Species: {{ character.species }}</p>
-      <div>
-        <span class="text-gray">Last known location:</span>
-        <p>{{ character.location.name }}</p>
-      </div>
-      <div>
-        <span class="text-gray">First seen in:</span>
-        <p>{{ firstAppearanceEpisodes[character.id]}}</p>
-      </div>
+        <div class="section">
+            <h2>{{ character.name }}</h2>
+            <div class="status-char"> <div :style="{ background: getStatusBg(character.status) }" class="circle"></div> <span>Status: {{ character.status }} - Species: {{ character.species }}</span></div>
+        </div>
+        <div class="section">
+            <span class="text-gray">Last known location:</span>
+            <p>{{ character.location.name }}</p>
+        </div>
+        <div class="section">
+            <span class="text-gray">First seen in:</span>
+            <p>{{ firstAppearanceEpisodes[character.id]}}</p>
+        </div>
     </div>
   </section>
 </template>
@@ -24,7 +27,11 @@ export default {
     characters: { type: Object, required: true },
   },
   setup(props) {
-    const firstAppearanceEpisodes = ref({}); // Создаем объект для хранения данных о первых эпизодах
+    const firstAppearanceEpisodes = ref({});
+    
+    function getStatusBg(status) {
+      return status === 'Alive' ? 'green' : status === 'Dead' ? 'red' : 'gray';
+    } // Создаем объект для хранения данных о первых эпизодах
 
     onMounted(() => {
       props.characters.data.forEach((character) => {
@@ -38,6 +45,7 @@ export default {
           .then((episodeData) => {
             // Сохраняем название первого эпизода в объекте firstAppearanceEpisodes
             firstAppearanceEpisodes.value[character.id] = episodeData.name;
+            console.log(firstAppearanceEpisodes[character.id]);
           })
           .catch((error) => {
             console.error('Проблема с fetch операцией:', error);
@@ -48,6 +56,7 @@ export default {
 
     return {
       firstAppearanceEpisodes,
+      getStatusBg,
     };
   },
 };
@@ -63,5 +72,24 @@ section {
 }
 .info {
   padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+}
+.section{
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0%;
+
+}
+.status-char{
+    display: flex;
+    align-items: center;
+
+}
+.circle{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 10px;
 }
 </style>
