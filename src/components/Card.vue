@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <section v-for="character in displayedCharacters" :key="character.id">
+    <section v-for="character in filteredCharacters" :key="character.id">
       <img :src="character.image" :alt="'Image of ' + character.name">
       <div class="info">
         <div class="section">
@@ -21,14 +21,21 @@
       </div>
     </section>
   </div>
-  <button @click="previousPage" :disabled="currentPage === 1">Previous</button>
-  <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+  <div class="filter-pagination">
+    <Filter @applyFilters="handleFilters" />
+    <button @click="previousPage" :disabled="currentPage === 1">Previous</button>
+    <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+  </div>
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
+import Filter from './Filter.vue'; // Импортируем компонент фильтрации
 
 export default {
+  components: {
+    Filter,
+  },
   props: {
     characters: { type: Object, required: true },
   },
@@ -36,11 +43,22 @@ export default {
     const firstAppearanceEpisodes = ref({});
     const currentPage = ref(1);
     const itemsPerPage = 6;
+    const nameFilter = ref('');
+    const statusFilter = ref('');
 
     const displayedCharacters = computed(() => {
       const startIndex = (currentPage.value - 1) * itemsPerPage;
       const endIndex = startIndex + itemsPerPage;
       return props.characters.data.slice(startIndex, endIndex);
+    });
+
+    const filteredCharacters = computed(() => {
+      return displayedCharacters.value.filter((character) => {
+        return (
+          (!nameFilter.value || character.name.toLowerCase().includes(nameFilter.value.toLowerCase())) &&
+          (!statusFilter.value || character.status === statusFilter.value)
+        );
+      });
     });
 
     const totalPages = computed(() => {
@@ -58,6 +76,11 @@ export default {
     function nextPage() {
       currentPage.value++;
     }
+
+    const handleFilters = (filters) => {
+      nameFilter.value = filters.name;
+      statusFilter.value = filters.status;
+    };
 
     onMounted(() => {
       props.characters.data.forEach((character) => {
@@ -82,14 +105,17 @@ export default {
       firstAppearanceEpisodes,
       getStatusBg,
       displayedCharacters,
+      filteredCharacters,
       currentPage,
       totalPages,
       previousPage,
       nextPage,
+      handleFilters,
     };
   },
 };
 </script>
+
 
 <style scoped>
 section {
