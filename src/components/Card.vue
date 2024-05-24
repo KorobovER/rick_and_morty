@@ -129,4 +129,7 @@ section {
     border-radius: 50%;
     margin-right: 10px;
 }
+button{
+  color: black
+}
 </style>
