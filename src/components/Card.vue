@@ -126,6 +126,10 @@ section {
   height: 220px;
   background: rgb(60, 62, 68);
   margin: 0.75rem;
+  border-radius: 25px;
+}
+img{
+  border-radius: 25px 0 0 25px ;
 }
 .container {
   display: flex;
