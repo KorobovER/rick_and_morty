@@ -7,7 +7,7 @@
           <h2>{{ character.name }}</h2>
           <div class="status-char">
             <div :style="{ background: getStatusBg(character.status) }" class="circle"></div>
-            <span>Status: {{ character.status }} - Species: {{ character.species }}</span>
+            <span>Status: {{ character.status }} - {{ character.species }}</span>
           </div>
         </div>
         <div class="section">
@@ -23,18 +23,19 @@
   </div>
   <div class="filter-pagination">
     <Filter @applyFilters="handleFilters" />
-    <button @click="previousPage" :disabled="currentPage === 1">Previous</button>
-    <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+    <Pagination :currentPage="currentPage" :totalPages="totalPages" @previousPage="previousPage" @nextPage="nextPage" />
   </div>
 </template>
 
 <script>
 import { ref, onMounted, computed, watch } from 'vue';
 import Filter from './Filter.vue'; // Импортируем компонент фильтрации
+import Pagination from './Pagination.vue'; // Импортируем компонент пагинации
 
 export default {
   components: {
     Filter,
+    Pagination,
   },
   props: {
     characters: { type: Object, required: true },
@@ -117,6 +118,7 @@ export default {
 </script>
 
 
+
 <style scoped>
 section {
   display: flex;
@@ -155,7 +157,5 @@ section {
     border-radius: 50%;
     margin-right: 10px;
 }
-button{
-  color: black
-}
+
 </style>

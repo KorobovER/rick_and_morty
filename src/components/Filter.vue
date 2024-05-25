@@ -2,10 +2,10 @@
   <div>
     <input type="text" v-model="nameFilter" placeholder="Имя">
     <select v-model="statusFilter">
-      <option value="">Все</option>
-      <option value="Alive">Живой</option>
-      <option value="Dead">Мертвый</option>
-      <option value="unknown">Неизвестно</option>
+      <option value="">All</option>
+      <option value="Alive">Alive</option>
+      <option value="Dead">Dead</option>
+      <option value="unknown">unknow</option>
     </select>
     <button @click="emitFilters">Применить</button>
   </div>
@@ -35,3 +35,10 @@ export default {
   },
 };
 </script>
+
+<style>
+select, option, button{
+  color: black;
+
+}
+</style>
